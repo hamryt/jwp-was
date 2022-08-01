@@ -16,11 +16,11 @@ public class Path {
     private static final int VALUE_INDEX = 1;
 
     private Map<String, String> conditions = new HashMap<>();
-    private final String name;
+    private final String path;
 
     public Path(String request) {
         String[] query = request.split(QUERY_DELIMITER);
-        this.name = query[NAME_INDEX];
+        this.path = query[NAME_INDEX];
 
         if (query.length > 1) {
             this.conditions = parseConditions(query[QUERY_INDEX]);
@@ -43,7 +43,7 @@ public class Path {
         return conditions.get(key);
     }
 
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 }

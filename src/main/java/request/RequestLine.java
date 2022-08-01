@@ -24,7 +24,7 @@ public class RequestLine {
     }
 
     public String getPath() {
-        return path.getName();
+        return path.getPath();
     }
 
     public String getPathValueOf(String key) {
