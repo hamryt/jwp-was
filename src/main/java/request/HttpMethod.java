@@ -11,4 +11,8 @@ public enum HttpMethod {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("잘못된 HttpMethod 요청입니다."));
     }
+
+    public Boolean isGet() {
+        return this.equals(GET);
+    }
 }

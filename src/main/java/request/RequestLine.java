@@ -19,8 +19,8 @@ public class RequestLine {
         protocol = new ProtocolVersion(splitRequestLine[PROTOCOL_INDEX]);
     }
 
-    public String getHttpMethod() {
-        return httpMethod.name();
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
     }
 
     public String getName() {

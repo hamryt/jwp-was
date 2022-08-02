@@ -1,9 +1,6 @@
 package request;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Path {
 
@@ -19,6 +16,7 @@ public class Path {
     private static final int VALUE_INDEX = 1;
 
     private static final int MAIN_PATH = 1;
+    private static final int ACTION_PATH = 2;
 
     private Map<String, String> conditions = new HashMap<>();
     private final String name;
@@ -59,5 +57,9 @@ public class Path {
     public Boolean isUser() {
         String[] paths = name.split(PATH_DELIMITER);
         return paths[MAIN_PATH].equals(DomainPath.user.name());
+    }
+
+    public Boolean isCreate() {
+        return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.create.name());
     }
 }

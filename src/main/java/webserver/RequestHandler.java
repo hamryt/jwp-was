@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 
+import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,8 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
-            User user = UserBinder.from(requestLine.getPath());
+            User user = UserBinder.from(requestLine);
+            DataBase.addUser(user);
 
             response200Header(dos, body.length);
             responseBody(dos, body);

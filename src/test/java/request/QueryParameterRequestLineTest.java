@@ -14,7 +14,7 @@ public class QueryParameterRequestLineTest {
         RequestLine requestLine = new RequestLine(request);
 
         assertAll(
-            () -> assertThat(requestLine.getHttpMethod()).isEqualTo(HttpMethod.GET.name()),
+            () -> assertThat(requestLine.getHttpMethod().name()).isEqualTo(HttpMethod.GET.name()),
             () -> assertThat(requestLine.getName()).isEqualTo("/users"),
             () -> assertThat(requestLine.getQueryValueOf("userId")).isEqualTo("javajigi"),
             () -> assertThat(requestLine.getQueryValueOf("password")).isEqualTo("password"),
@@ -40,5 +40,16 @@ public class QueryParameterRequestLineTest {
         Path path = new Path(query);
 
         assertThat(path.isUser()).isFalse();
+    }
+
+    @DisplayName("GET /user/create 도메인에 대한 요청 식별 성공")
+    @Test
+    void identifyUserCreateRequestSuccess() {
+        String query = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+        RequestLine requestLine = new RequestLine(query);
+        Path path = requestLine.getPath();
+
+        assertThat(path.isUser()).isTrue();
+        assertThat(path.isCreate()).isTrue();
     }
 }
