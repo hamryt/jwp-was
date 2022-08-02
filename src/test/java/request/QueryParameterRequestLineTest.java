@@ -26,7 +26,7 @@ public class QueryParameterRequestLineTest {
 
     @DisplayName("user 도메인에 대한 요청 식별 성공")
     @Test
-    void identifyUserRequestSuccess() {
+    void identifyUserRequest_success() {
         String query = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
         Path path = new Path(query);
 
@@ -35,7 +35,7 @@ public class QueryParameterRequestLineTest {
 
     @DisplayName("user 도메인에 대한 요청 식별 실패")
     @Test
-    void identifyUserRequestFail() {
+    void identifyUserRequest_fail() {
         String query = "/team/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
         Path path = new Path(query);
 
@@ -44,7 +44,7 @@ public class QueryParameterRequestLineTest {
 
     @DisplayName("GET /user/create 도메인에 대한 요청 식별 성공")
     @Test
-    void identifyUserCreateRequestSuccess() {
+    void identifyUserCreateRequest_success() {
         String query = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
         RequestLine requestLine = new RequestLine(query);
         Path path = requestLine.getPath();
