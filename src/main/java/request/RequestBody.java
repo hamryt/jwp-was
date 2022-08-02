@@ -34,6 +34,10 @@ public class RequestBody {
         return keyValue.length > 1;
     }
 
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
     public String get(String key) {
         return parameters.get(key);
     }

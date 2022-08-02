@@ -8,10 +8,9 @@ import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import request.RequestHeader;
-import request.RequestLine;
-import request.UserBinder;
+import request.*;
 import utils.FileIoUtils;
+import utils.IOUtils;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -35,8 +34,6 @@ public class RequestHandler implements Runnable {
             RequestLine requestLine = new RequestLine(line);
             DataOutputStream dos = new DataOutputStream(out);
 
-            byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
-
             RequestHeader requestHeader = new RequestHeader();
 
             while (!line.isEmpty()) {
@@ -44,7 +41,16 @@ public class RequestHandler implements Runnable {
                 requestHeader.add(line);
                 line = bufferedReader.readLine();
             }
-            addUser(requestLine);
+
+            if (requestHeader.hasRequestBody()) {
+                String body = IOUtils.readData(bufferedReader, requestHeader.getContentLength());
+                logger.debug("body : {}", body);
+
+                RequestBody requestBody = new RequestBody(body);
+                addUser(requestLine, requestBody);
+            }
+
+            byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
             response200Header(dos, body.length);
             responseBody(dos, body);
@@ -53,9 +59,19 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void addUser(RequestLine requestLine) {
-        User user = UserBinder.from(requestLine);
-//        DataBase.addUser(user);
+    private void addUser(RequestLine requestLine, RequestBody requestBody) {
+        Path path = requestLine.getPath();
+        HttpMethod httpMethod = requestLine.getHttpMethod();
+        if (!validateUserRequest(path, httpMethod)) return;
+
+        User user = UserBinder.from(requestBody.getParameters());
+        logger.debug("user = {}", user);
+    }
+
+    private boolean validateUserRequest(Path path, HttpMethod httpMethod) {
+        if (!httpMethod.isPost()) return false;
+        if (!path.isUser()) return false;
+        return path.isCreate();
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {

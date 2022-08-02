@@ -40,8 +40,8 @@ public class RequestHeader {
         return headers.get(CONNECTION);
     }
 
-    public String getContentLength() {
-        return headers.get(CONTENT_LENGTH);
+    public int getContentLength() {
+        return Integer.parseInt(headers.get(CONTENT_LENGTH));
     }
 
     public String getContentType() {
@@ -53,7 +53,11 @@ public class RequestHeader {
     }
 
     public String get(String key) {
-        return headers.get(key) ;
+        return headers.get(key);
+    }
+
+    public boolean hasRequestBody() {
+        return headers.containsKey(CONTENT_LENGTH) && getContentLength() > 0;
     }
 
     @Override

@@ -55,7 +55,7 @@ class RequestHeaderTest {
         assertAll(
             () -> Assertions.assertThat(requestHeader.getHost()).isEqualTo("localhost:8080"),
             () -> Assertions.assertThat(requestHeader.getConnection()).isEqualTo("keep-alive"),
-            () -> Assertions.assertThat(requestHeader.getContentLength()).isEqualTo("59"),
+            () -> Assertions.assertThat(requestHeader.getContentLength()).isEqualTo(59),
             () -> Assertions.assertThat(requestHeader.getContentType()).isEqualTo("application/x-www-form-urlencoded"),
             () -> Assertions.assertThat(requestHeader.getAccept()).isEqualTo("*/*")
         );

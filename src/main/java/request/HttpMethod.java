@@ -15,4 +15,8 @@ public enum HttpMethod {
     public Boolean isGet() {
         return this.equals(GET);
     }
+
+    public Boolean isPost() {
+        return this.equals(POST);
+    }
 }
