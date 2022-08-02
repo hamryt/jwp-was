@@ -4,9 +4,11 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import request.RequestLine;
+import request.UserBinder;
 import utils.FileIoUtils;
 
 public class RequestHandler implements Runnable {
@@ -30,7 +32,9 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestLine requestLine = new RequestLine(line);
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getPath());
+            byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
+
+            User user = UserBinder.from(requestLine.getPath());
 
             response200Header(dos, body.length);
             responseBody(dos, body);

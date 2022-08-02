@@ -23,12 +23,20 @@ public class RequestLine {
         return httpMethod.name();
     }
 
-    public String getPath() {
-        return path.getPath();
+    public String getName() {
+        return path.getName();
     }
 
-    public String getPathValueOf(String key) {
-        return path.getValue(key);
+    public Path getPath() {
+        return path;
+    }
+
+    public Boolean isUserRequest() {
+        return path.isUser();
+    }
+
+    public String getQueryValueOf(String key) {
+        return path.getQueryValue(key);
     }
 
     public String getProtocol() {

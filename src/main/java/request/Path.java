@@ -1,6 +1,8 @@
 package request;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Path {
@@ -8,6 +10,7 @@ public class Path {
     private static final String QUERY_DELIMITER = "\\?";
     private static final String CONDITION_DELIMITER = "&";
     private static final String KEY_VALUE_DELIMITER = "=";
+    private static final String PATH_DELIMITER = "/";
 
     private static final int NAME_INDEX = 0;
     private static final int QUERY_INDEX = 1;
@@ -15,12 +18,14 @@ public class Path {
     private static final int KEY_INDEX = 0;
     private static final int VALUE_INDEX = 1;
 
+    private static final int MAIN_PATH = 1;
+
     private Map<String, String> conditions = new HashMap<>();
-    private final String path;
+    private final String name;
 
     public Path(String request) {
         String[] query = request.split(QUERY_DELIMITER);
-        this.path = query[NAME_INDEX];
+        this.name = query[NAME_INDEX];
 
         if (query.length > 1) {
             this.conditions = parseConditions(query[QUERY_INDEX]);
@@ -39,11 +44,20 @@ public class Path {
         return conditions;
     }
 
-    public String getValue(String key) {
+    public List<String> getQueryKeys() {
+        return new ArrayList<>(conditions.keySet());
+    }
+
+    public String getQueryValue(String key) {
         return conditions.get(key);
     }
 
-    public String getPath() {
-        return path;
+    public String getName() {
+        return name;
+    }
+
+    public Boolean isUser() {
+        String[] paths = name.split(PATH_DELIMITER);
+        return paths[MAIN_PATH].equals(DomainPath.user.name());
     }
 }

@@ -15,12 +15,30 @@ public class QueryParameterRequestLineTest {
 
         assertAll(
             () -> assertThat(requestLine.getHttpMethod()).isEqualTo(HttpMethod.GET.name()),
-            () -> assertThat(requestLine.getPath()).isEqualTo("/users"),
-            () -> assertThat(requestLine.getPathValueOf("userId")).isEqualTo("javajigi"),
-            () -> assertThat(requestLine.getPathValueOf("password")).isEqualTo("password"),
-            () -> assertThat(requestLine.getPathValueOf("name")).isEqualTo("JaeSung"),
+            () -> assertThat(requestLine.getName()).isEqualTo("/users"),
+            () -> assertThat(requestLine.getQueryValueOf("userId")).isEqualTo("javajigi"),
+            () -> assertThat(requestLine.getQueryValueOf("password")).isEqualTo("password"),
+            () -> assertThat(requestLine.getQueryValueOf("name")).isEqualTo("JaeSung"),
             () -> assertThat(requestLine.getProtocol()).isEqualTo("HTTP"),
             () -> assertThat(requestLine.getVersion()).isEqualTo("1.1")
         );
+    }
+
+    @DisplayName("user 도메인에 대한 요청 식별 성공")
+    @Test
+    void identifyUserRequestSuccess() {
+        String query = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+        Path path = new Path(query);
+
+        assertThat(path.isUser()).isTrue();
+    }
+
+    @DisplayName("user 도메인에 대한 요청 식별 실패")
+    @Test
+    void identifyUserRequestFail() {
+        String query = "/team/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+        Path path = new Path(query);
+
+        assertThat(path.isUser()).isFalse();
     }
 }
