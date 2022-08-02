@@ -8,6 +8,7 @@ import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import request.RequestHeader;
 import request.RequestLine;
 import request.UserBinder;
 import utils.FileIoUtils;
@@ -33,16 +34,28 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestLine requestLine = new RequestLine(line);
             DataOutputStream dos = new DataOutputStream(out);
+
             byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
-            User user = UserBinder.from(requestLine);
-            DataBase.addUser(user);
+            RequestHeader requestHeader = new RequestHeader();
+
+            while (!line.isEmpty()) {
+                logger.debug("header: {}", line);
+                requestHeader.add(line);
+                line = bufferedReader.readLine();
+            }
+            addUser(requestLine);
 
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException | URISyntaxException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private void addUser(RequestLine requestLine) {
+        User user = UserBinder.from(requestLine);
+//        DataBase.addUser(user);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
