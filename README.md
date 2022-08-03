@@ -26,3 +26,7 @@
 
 ### 기능 요구사항 3
 * http://localhost:8080/user/form.html 파일의 form 태그 method를 get에서 post로 수정한 후 회원가입 기능이 정상적으로 동작하도록 구현한다.
+
+### 기능 요구사항 4
+* redirect 방식처럼 회원가입을 완료한 후 “index.html”로 이동해야 한다. 즉, 브라우저의 URL이 /index.html로 변경해야 한다.
+* 응답 헤더의 status code를 302로 설정한다

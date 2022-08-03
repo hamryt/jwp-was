@@ -47,9 +47,11 @@ public class RequestHandler implements Runnable {
                 logger.debug("body : {}", body);
 
                 RequestBody requestBody = new RequestBody(body);
-                addUser(requestLine, requestBody);
+                addUser(requestLine, requestBody, dos);
             }
 
+            System.out.println("asDDASDAFSDAFAF");
+            System.out.println(requestLine.getName());
             byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
             response200Header(dos, body.length);
@@ -59,13 +61,25 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void addUser(RequestLine requestLine, RequestBody requestBody) {
+    private void addUser(RequestLine requestLine, RequestBody requestBody, DataOutputStream dos) {
         Path path = requestLine.getPath();
         HttpMethod httpMethod = requestLine.getHttpMethod();
         if (!validateUserRequest(path, httpMethod)) return;
 
         User user = UserBinder.from(requestBody.getParameters());
         logger.debug("user = {}", user);
+
+        response302Header(dos);
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: /index.html\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     private boolean validateUserRequest(Path path, HttpMethod httpMethod) {
