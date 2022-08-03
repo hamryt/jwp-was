@@ -70,4 +70,9 @@ public class Path {
     public boolean isList() {
         return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.list.name());
     }
+
+    public boolean isTemplate() {
+        String[] paths = name.split(PATH_DELIMITER);
+        return paths[MAIN_PATH].contains("html") || paths[MAIN_PATH].contains("ico") ;
+    }
 }
