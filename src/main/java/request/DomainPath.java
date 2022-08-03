@@ -1,5 +1,5 @@
 package request;
 
 public enum DomainPath {
-    user, create;
+    user, create, login;
 }

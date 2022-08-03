@@ -54,12 +54,17 @@ public class Path {
         return name;
     }
 
-    public Boolean isUser() {
+    public boolean isUser() {
         String[] paths = name.split(PATH_DELIMITER);
         return paths[MAIN_PATH].equals(DomainPath.user.name());
     }
 
-    public Boolean isCreate() {
+    public boolean isCreate() {
         return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.create.name());
     }
+
+    public boolean isLogin() {
+        return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.login.name());
+    }
+
 }
