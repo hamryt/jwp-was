@@ -50,8 +50,6 @@ public class RequestHandler implements Runnable {
                 addUser(requestLine, requestBody, dos);
             }
 
-            System.out.println("asDDASDAFSDAFAF");
-            System.out.println(requestLine.getName());
             byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
             response200Header(dos, body.length);
