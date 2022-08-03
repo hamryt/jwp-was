@@ -3,8 +3,15 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
@@ -40,11 +47,20 @@ public class RequestHandler implements Runnable {
 
             RequestBody requestBody = getRequestBody(requestHeader, bufferedReader);
 
-            addUser(requestLine, requestBody, dos);
+            if (validateUserRequest(requestLine.getPath(), requestLine.getHttpMethod())) {
+                addUser(requestBody, dos);
+                return;
+            }
 
+            if (validateLoginRequest(requestLine.getPath(), requestLine.getHttpMethod())) {
+                login(requestBody, dos);
+                return;
+            }
 
-            login(requestLine, requestBody, dos);
-
+            if (validateUserList(requestLine.getPath(), requestLine.getHttpMethod())) {
+                userList(requestHeader, dos);
+                return;
+            }
 
             byte[] body = FileIoUtils.loadFileFromClasspath("templates" + requestLine.getName());
 
@@ -53,6 +69,39 @@ public class RequestHandler implements Runnable {
         } catch (IOException | URISyntaxException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private void userList(RequestHeader requestHeader, DataOutputStream dos) throws IOException {
+        boolean isLogin = Optional.ofNullable(requestHeader.get("Cookie"))
+            .map(logined -> logined.equals("logined=true"))
+            .orElse(false);
+
+        if (!isLogin) {
+            response302Header(dos, "/user/login.html");
+        }
+
+        TemplateLoader loader = new ClassPathTemplateLoader();
+        loader.setPrefix("/templates");
+        loader.setSuffix(".html");
+        Handlebars handlebars = new Handlebars(loader);
+        handlebars.registerHelper("inc", (context, options) -> (int) context + 1);
+
+        Template template = handlebars.compile("user/list");
+
+        Collection<User> users = DataBase.findAll();
+        Map<String, Collection<User>> param = Map.of("users", users);
+
+        String profilePage = template.apply(param);
+        byte[] body = profilePage.getBytes();
+
+        response200Header(dos, body.length);
+        responseBody(dos, body);
+    }
+
+    private boolean validateUserList(Path path, HttpMethod httpMethod) {
+        if (!httpMethod.isGet()) return false;
+        if (!path.isUser()) return false;
+        return path.isList();
     }
 
     private void addRequestHeader(BufferedReader bufferedReader, RequestHeader requestHeader) throws IOException {
@@ -75,23 +124,19 @@ public class RequestHandler implements Runnable {
         return new RequestBody("");
     }
 
-    private void addUser(RequestLine requestLine, RequestBody requestBody, DataOutputStream dos) {
-        Path path = requestLine.getPath();
-        HttpMethod httpMethod = requestLine.getHttpMethod();
-        if (!validateUserRequest(path, httpMethod)) return;
-
+    private void addUser(RequestBody requestBody, DataOutputStream dos) {
         User user = UserBinder.from(requestBody.getParameters());
         logger.debug("user = {}", user);
 
         DataBase.addUser(user);
 
-        response302Header(dos);
+        response302Header(dos, "/index.html");
     }
 
-    private void response302Header(DataOutputStream dos) {
+    private void response302Header(DataOutputStream dos, String location) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
-            dos.writeBytes("Location: /index.html\r\n");
+            dos.writeBytes("Location: " + location + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -104,8 +149,7 @@ public class RequestHandler implements Runnable {
         return path.isCreate();
     }
 
-    private void login(RequestLine requestLine, RequestBody requestBody, DataOutputStream dos) {
-        if (!validateLoginRequest(requestLine.getPath(), requestLine.getHttpMethod())) return;
+    private void login(RequestBody requestBody, DataOutputStream dos) {
 
         User user = UserBinder.from(requestBody.getParameters());
 

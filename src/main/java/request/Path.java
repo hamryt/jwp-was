@@ -67,4 +67,7 @@ public class Path {
         return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.login.name());
     }
 
+    public boolean isList() {
+        return name.substring(name.lastIndexOf(PATH_DELIMITER) + 1).equals(DomainPath.list.name());
+    }
 }
