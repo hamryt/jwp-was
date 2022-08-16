@@ -23,4 +23,7 @@ public class ProtocolVersion {
         return version;
     }
 
+    public String getValue() {
+        return protocol + DELIMITER + version;
+    }
 }
