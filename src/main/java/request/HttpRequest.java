@@ -19,4 +19,8 @@ public class HttpRequest {
     public RequestBody getRequestBody() {
         return requestBody;
     }
+
+    public RequestHeader getRequestHeader() {
+        return requestHeader;
+    }
 }

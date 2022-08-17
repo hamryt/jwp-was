@@ -22,6 +22,7 @@ import utils.FileIoUtils;
 import utils.IOUtils;
 import webserver.handler.CreateUserController;
 import webserver.handler.LoginController;
+import webserver.handler.UserListController;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -68,7 +69,11 @@ public class RequestHandler implements Runnable {
             }
 
             if (validateUserList(requestLine.getPath(), requestLine.getHttpMethod())) {
-                userList(requestHeader, dos);
+                final HttpRequest httpRequest = new HttpRequest(requestLine, requestHeader, requestBody);
+                final UserListController createUserController = new UserListController();
+                final HttpResponse response = createUserController.handle(httpRequest);
+
+                response.write(dos);
                 return;
             }
 
@@ -94,33 +99,6 @@ public class RequestHandler implements Runnable {
         }
 
         return body;
-    }
-
-    private void userList(RequestHeader requestHeader, DataOutputStream dos) throws IOException {
-        boolean isLogin = Optional.ofNullable(requestHeader.get("Cookie"))
-            .map(logined -> logined.equals("logined=true"))
-            .orElse(false);
-
-        if (!isLogin) {
-            response302Header(dos, "/user/login.html");
-        }
-
-        TemplateLoader loader = new ClassPathTemplateLoader();
-        loader.setPrefix("/templates");
-        loader.setSuffix(".html");
-        Handlebars handlebars = new Handlebars(loader);
-        handlebars.registerHelper("inc", (context, options) -> (int) context + 1);
-
-        Template template = handlebars.compile("user/list");
-
-        Collection<User> users = DataBase.findAll();
-        Map<String, Collection<User>> param = Map.of("users", users);
-
-        String profilePage = template.apply(param);
-        byte[] body = profilePage.getBytes();
-
-        response200Header(dos, body.length, "text/html");
-        responseBody(dos, body);
     }
 
     private boolean validateUserList(Path path, HttpMethod httpMethod) {
@@ -149,63 +127,10 @@ public class RequestHandler implements Runnable {
         return new RequestBody("");
     }
 
-    private void addUser(RequestBody requestBody, DataOutputStream dos) {
-        User user = UserBinder.from(requestBody.getParameters());
-        logger.debug("user = {}", user);
-
-        DataBase.addUser(user);
-
-        response302Header(dos, "/index.html");
-    }
-
-    private void response302Header(DataOutputStream dos, String location) {
-        try {
-            dos.writeBytes("HTTP/1.1 302 Found \r\n");
-            dos.writeBytes("Location: " + location + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
     private boolean validateUserRequest(Path path, HttpMethod httpMethod) {
         if (!httpMethod.isPost()) return false;
         if (!path.isUser()) return false;
         return path.isCreate();
-    }
-
-    private void login(RequestBody requestBody, DataOutputStream dos) {
-
-        User user = UserBinder.from(requestBody.getParameters());
-
-        boolean isAuthenticated = Optional.ofNullable(DataBase.findUserById(user.getUserId()))
-            .map(it -> it.getPassword().equals(user.getPassword()))
-            .orElse(false);
-
-        if (!isAuthenticated) {
-            ResponseHeader responseHeader = new ResponseHeader();
-            responseHeader.add("Location", "/user/login_failed.html");
-            responseHeader.add("Set-Cookie", "logined=false; Path=/");
-            response302Header(dos, responseHeader);
-            return;
-        }
-
-        ResponseHeader responseHeader = new ResponseHeader();
-        responseHeader.add("Location", "/index.html");
-        responseHeader.add("Set-Cookie", "logined=true; Path=/");
-        response302Header(dos, responseHeader);
-    }
-
-    private void response302Header(DataOutputStream dos, ResponseHeader responseHeader) {
-        try {
-            dos.writeBytes("HTTP/1.1 302 Found \r\n");
-            for (String header : responseHeader.getHeaders().keySet()) {
-                dos.writeBytes(header + ": " + responseHeader.get(header) + "\r\n");
-            }
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private boolean validateLoginRequest(Path path, HttpMethod httpMethod) {
