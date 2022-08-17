@@ -17,9 +17,11 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import request.*;
+import response.HttpResponse;
 import response.ResponseHeader;
 import utils.FileIoUtils;
 import utils.IOUtils;
+import webserver.handler.CreateUserController;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -48,7 +50,13 @@ public class RequestHandler implements Runnable {
             RequestBody requestBody = getRequestBody(requestHeader, bufferedReader);
 
             if (validateUserRequest(requestLine.getPath(), requestLine.getHttpMethod())) {
-                addUser(requestBody, dos);
+//                addUser(requestBody, dos);
+
+                HttpRequest httpRequest = new HttpRequest(requestLine, requestHeader, requestBody);
+                CreateUserController createUserController = new CreateUserController();
+                HttpResponse response = createUserController.handle(httpRequest);
+
+                response.write(dos);
                 return;
             }
 

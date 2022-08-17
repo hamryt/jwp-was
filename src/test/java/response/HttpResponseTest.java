@@ -22,4 +22,20 @@ class HttpResponseTest {
         HttpResponse response = new HttpResponse(responseLine, responseHeader, responseBody);
         assertThat(response).isEqualTo(new HttpResponse(responseLine, responseHeader, responseBody));
     }
+
+    @DisplayName("페이지 이동 상태 코드와 응답 본문이 없는 HttpResponse 객체를 생성한다")
+    @Test
+    void response_found_without_body() {
+        ResponseLine responseLine = new ResponseLine(new ProtocolVersion("HTTP/1.1"), StatusCode.FOUND);
+
+        ResponseHeader responseHeader = new ResponseHeader();
+        responseHeader.add("Location", "/index.html");
+
+        ResponseBody responseBody  = ResponseBody.EMPTY_RESPONSE_BODY;
+        HttpResponse expected = new HttpResponse(responseLine, responseHeader, responseBody);
+
+        HttpResponse actual = HttpResponse.redirect("/index.html");
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }

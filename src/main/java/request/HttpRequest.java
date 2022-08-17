@@ -11,4 +11,12 @@ public class HttpRequest {
         this.requestHeader = requestHeader;
         this.requestBody = requestBody;
     }
+
+    public RequestLine getRequestLine() {
+        return requestLine;
+    }
+
+    public RequestBody getRequestBody() {
+        return requestBody;
+    }
 }

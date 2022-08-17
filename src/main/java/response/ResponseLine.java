@@ -32,6 +32,10 @@ public class ResponseLine {
         return statusCode.name();
     }
 
+    public String value() {
+        return protocolVersion.getValue() + " " + statusCode.message();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

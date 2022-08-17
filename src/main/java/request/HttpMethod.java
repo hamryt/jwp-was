@@ -19,4 +19,6 @@ public enum HttpMethod {
     public Boolean isPost() {
         return this.equals(POST);
     }
+
+
 }

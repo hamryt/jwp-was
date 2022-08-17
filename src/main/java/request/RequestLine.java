@@ -1,6 +1,8 @@
 package request;
 
 
+import java.util.Objects;
+
 public class RequestLine {
 
     private static final String DELIMITER = " ";
@@ -17,6 +19,30 @@ public class RequestLine {
         httpMethod = HttpMethod.from(splitRequestLine[HTTP_METHOD_INDEX]);
         path = new Path(splitRequestLine[PATH_INDEX]);
         protocol = new ProtocolVersion(splitRequestLine[PROTOCOL_INDEX]);
+    }
+
+    public RequestLine(HttpMethod httpMethod, Path path, ProtocolVersion protocol) {
+        this.httpMethod = httpMethod;
+        this.path = path;
+        this.protocol = protocol;
+    }
+
+    public static RequestLine parse(String requestLine) {
+        validate(requestLine);
+
+        String[] tokens = requestLine.split(DELIMITER);
+
+        return of(tokens[HTTP_METHOD_INDEX], tokens[PATH_INDEX], tokens[PROTOCOL_INDEX]);
+    }
+
+    public static RequestLine of(String httpMethod, String path, String protocol) {
+        return new RequestLine(HttpMethod.from(httpMethod), new Path(path), new ProtocolVersion(protocol));
+    }
+
+    private static void validate(String requestLine) {
+        if (requestLine == null || requestLine.isBlank()) {
+            throw new IllegalArgumentException("빈 문자열은 파싱할 수 없습니다.");
+        }
     }
 
     public HttpMethod getHttpMethod() {
@@ -45,5 +71,18 @@ public class RequestLine {
 
     public String getVersion() {
         return protocol.getVersion();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RequestLine that = (RequestLine) o;
+        return httpMethod == that.httpMethod && Objects.equals(path, that.path) && Objects.equals(protocol, that.protocol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(httpMethod, path, protocol);
     }
 }

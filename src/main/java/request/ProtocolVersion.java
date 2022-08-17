@@ -1,5 +1,7 @@
 package request;
 
+import java.util.Objects;
+
 public class ProtocolVersion {
 
     private static final String DELIMITER = "/";
@@ -25,5 +27,18 @@ public class ProtocolVersion {
 
     public String getValue() {
         return protocol + DELIMITER + version;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProtocolVersion that = (ProtocolVersion) o;
+        return Objects.equals(protocol, that.protocol) && Objects.equals(version, that.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(protocol, version);
     }
 }

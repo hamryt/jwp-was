@@ -75,4 +75,17 @@ public class Path {
         String[] paths = name.split(PATH_DELIMITER);
         return paths[MAIN_PATH].contains("html") || paths[MAIN_PATH].contains("ico") ;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Path path = (Path) o;
+        return Objects.equals(conditions, path.conditions) && Objects.equals(name, path.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conditions, name);
+    }
 }
