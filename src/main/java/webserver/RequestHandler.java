@@ -51,8 +51,6 @@ public class RequestHandler implements Runnable {
             RequestBody requestBody = getRequestBody(requestHeader, bufferedReader);
 
             if (validateUserRequest(requestLine.getPath(), requestLine.getHttpMethod())) {
-//                addUser(requestBody, dos);
-
                 HttpRequest httpRequest = new HttpRequest(requestLine, requestHeader, requestBody);
                 CreateUserController createUserController = new CreateUserController();
                 HttpResponse response = createUserController.handle(httpRequest);
