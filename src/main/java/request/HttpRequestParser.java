@@ -1,6 +1,5 @@
 package request;
 
-import org.springframework.web.context.request.RequestScope;
 import utils.IOUtils;
 
 import java.io.BufferedReader;
