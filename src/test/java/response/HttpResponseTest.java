@@ -1,5 +1,6 @@
 package response;
 
+import org.apache.coyote.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import request.ProtocolVersion;
@@ -35,6 +36,22 @@ class HttpResponseTest {
         HttpResponse expected = new HttpResponse(responseLine, responseHeader, responseBody);
 
         HttpResponse actual = HttpResponse.redirect("/index.html");
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("응답 헤더에 쿠키를 추가한다")
+    @Test
+    void add_cookie_to_response_headers() {
+        ResponseLine responseLine = new ResponseLine(new ProtocolVersion("HTTP/1.1"), StatusCode.FOUND);
+        ResponseHeader responseHeader = new ResponseHeader();
+        responseHeader.add("Location", "/index.html");
+        responseHeader.add("Set-Cookie", "logined=true; Path=/");
+        ResponseBody responseBody = ResponseBody.EMPTY_RESPONSE_BODY;
+
+        HttpResponse expected = new HttpResponse(responseLine, responseHeader, responseBody);
+        HttpResponse actual = HttpResponse.redirect("/index.html")
+            .addCookie("logined", "true");
 
         assertThat(actual).isEqualTo(expected);
     }

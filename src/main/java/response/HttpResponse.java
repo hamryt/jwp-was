@@ -51,13 +51,16 @@ public class HttpResponse {
         dos.write(responseBody.getBytes(), 0, responseBody.getBytes().length);
     }
 
-
-
     public static HttpResponse redirect(String location) {
         ResponseHeader headers = new ResponseHeader();
         headers.add("Location", location);
 
         return new HttpResponse(new ResponseLine(new ProtocolVersion("HTTP/1.1"), StatusCode.FOUND), headers, ResponseBody.EMPTY_RESPONSE_BODY);
+    }
+
+    public HttpResponse addCookie(String key, String value) {
+        responseHeader.add("Set-Cookie", String.format("%s=%s; Path=/", key, value));
+        return this;
     }
 
     @Override
