@@ -1,6 +1,5 @@
 package request;
 
-import javax.swing.text.AbstractDocument;
 import java.util.Arrays;
 
 public enum ContentType {
@@ -11,11 +10,11 @@ public enum ContentType {
 
 
     private String fileExtension;
-    private String contentType;
+    private String mediaType;
 
-    ContentType(String fileExtension, String contentType) {
+    ContentType(String fileExtension, String mediaType) {
         this.fileExtension = fileExtension;
-        this.contentType = contentType;
+        this.mediaType = mediaType;
     }
 
     public static ContentType of(String fileExtension) {
@@ -25,7 +24,7 @@ public enum ContentType {
             .orElse(HTML);
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getMediaType() {
+        return mediaType;
     }
 }

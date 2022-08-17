@@ -3,7 +3,6 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -74,7 +73,7 @@ public class RequestHandler implements Runnable {
             }
 
             String fileExtension = FileIoUtils.getFileExtension(requestLine.getName());
-            String contentType = ContentType.of(fileExtension).getContentType();
+            String contentType = ContentType.of(fileExtension).getMediaType();
 
             byte[] body = getBody(requestLine);
 
