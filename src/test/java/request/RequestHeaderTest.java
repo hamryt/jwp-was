@@ -1,5 +1,6 @@
 package request;
 
+import org.apache.coyote.Request;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,5 +60,14 @@ class RequestHeaderTest {
             () -> Assertions.assertThat(requestHeader.getContentType()).isEqualTo("application/x-www-form-urlencoded"),
             () -> Assertions.assertThat(requestHeader.getAccept()).isEqualTo("*/*")
         );
+    }
+
+    @DisplayName("쿠키가 존재하는지 확인할 수 있다")
+    @Test
+    void has_cookie() {
+        RequestHeader requestHeader = new RequestHeader();
+        requestHeader.add("Cookie: cookie=value");
+
+        assertThat(requestHeader.hasCookie("cookie=value")).isTrue();
     }
 }

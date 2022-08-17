@@ -11,6 +11,7 @@ public class RequestHeader {
     private static final String CONTENT_LENGTH = "Content-Length";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String ACCEPT = "Accept";
+    private static final String COOKIE = "Cookie";
 
     private static final String HEADER_DELIMITER = ": ";
 
@@ -58,6 +59,10 @@ public class RequestHeader {
 
     public boolean hasRequestBody() {
         return headers.containsKey(CONTENT_LENGTH) && getContentLength() > 0;
+    }
+
+    public boolean hasCookie(String value) {
+        return headers.containsKey("Cookie") && headers.get("Cookie").contains(value);
     }
 
     @Override
