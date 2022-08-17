@@ -22,6 +22,7 @@ import response.ResponseHeader;
 import utils.FileIoUtils;
 import utils.IOUtils;
 import webserver.handler.CreateUserController;
+import webserver.handler.LoginController;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -61,7 +62,11 @@ public class RequestHandler implements Runnable {
             }
 
             if (validateLoginRequest(requestLine.getPath(), requestLine.getHttpMethod())) {
-                login(requestBody, dos);
+                HttpRequest httpRequest = new HttpRequest(requestLine, requestHeader, requestBody);
+                LoginController loginController = new LoginController();
+                HttpResponse response = loginController.handle(httpRequest);
+
+                response.write(dos);
                 return;
             }
 
