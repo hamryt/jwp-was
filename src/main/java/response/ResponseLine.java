@@ -10,12 +10,12 @@ import java.util.Objects;
  * Set-Cookie: logined=true; Path=/
  */
 
-public class StatusLine {
+public class ResponseLine {
 
     private final ProtocolVersion protocolVersion;
     private final StatusCode statusCode;
 
-    public StatusLine(ProtocolVersion protocolVersion, StatusCode statusCode) {
+    public ResponseLine(ProtocolVersion protocolVersion, StatusCode statusCode) {
         this.protocolVersion = protocolVersion;
         this.statusCode = statusCode;
     }
@@ -40,7 +40,7 @@ public class StatusLine {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final StatusLine that = (StatusLine) o;
+        final ResponseLine that = (ResponseLine) o;
         return Objects.equals(protocolVersion, that.protocolVersion) && statusCode == that.statusCode;
     }
 
