@@ -1,20 +1,18 @@
 package webserver.session;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class HttpSession {
 
-    private final String id;
-    private final Map<String, Object> attribute = new HashMap<>();
+    private final SessionId id;
+    private final SessionAttribute attribute = new SessionAttribute();
 
     public HttpSession(SessionIdGenerator sessionIdGenerator) {
-        this.id = sessionIdGenerator.generate();
+        this.id = new SessionId(sessionIdGenerator);
     }
 
     public void setAttribute(String name, String value) {
-        attribute.put(name, value);
+        attribute.set(name, value);
     }
 
     public Object getAttribute(String name) {
@@ -26,7 +24,7 @@ public class HttpSession {
     }
 
     public void invalidate() {
-        attribute.clear();
+        attribute.invalidate();
     }
 
     @Override

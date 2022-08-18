@@ -8,15 +8,15 @@ public class SessionAttribute {
 
     private final Map<String, Object> attribute = new HashMap<>();
 
-    public void setAttribute(String name, String value) {
+    public void set(String name, String value) {
         attribute.put(name, value);
     }
 
-    public Object getAttribute(String name) {
+    public Object get(String name) {
         return attribute.get(name);
     }
 
-    public void removeAttribute(String name) {
+    public void remove(String name) {
         attribute.remove(name);
     }
 
