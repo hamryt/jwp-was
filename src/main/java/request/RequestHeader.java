@@ -1,8 +1,17 @@
 package request;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+/**
+ * GET /index.html HTTP/1.1
+ * Host: localhost:8080
+ * Connection: keep-alive
+ * Accept:
+ * Cookie:logined=true
+ */
 
 public class RequestHeader {
 
@@ -61,8 +70,27 @@ public class RequestHeader {
         return headers.containsKey(CONTENT_LENGTH) && getContentLength() > 0;
     }
 
-    public boolean hasCookie(String value) {
-        return headers.containsKey("Cookie") && headers.get("Cookie").contains(value);
+    public boolean hasCookie(String cookieName) {
+        return headers.containsKey(COOKIE) &&
+            Arrays.stream(getCookies())
+                .filter(cookie -> cookie.startsWith(cookieName))
+                .anyMatch(cookie -> cookie.split("=").length == 2);
+    }
+
+    private String getCookie(String cookieName) {
+        if (!hasCookie(cookieName)) {
+            return null;
+        }
+
+        return Arrays.stream(getCookies())
+            .filter(cookie -> cookie.startsWith(cookieName))
+            .findFirst()
+            .map(cookie -> cookie.split("=")[1])
+            .orElse(null);
+    }
+
+    private String[] getCookies() {
+        return headers.get(COOKIE).split(";");
     }
 
     @Override
