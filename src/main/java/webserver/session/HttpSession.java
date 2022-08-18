@@ -27,6 +27,10 @@ public class HttpSession {
         attribute.invalidate();
     }
 
+    public String getId() {
+        return id.get();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

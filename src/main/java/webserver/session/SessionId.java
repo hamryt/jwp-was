@@ -10,6 +10,9 @@ public class SessionId {
         this.id = sessionIdGenerator.generate();
     }
 
+    public String get() {
+        return id;
+    }
 
     @Override
     public boolean equals(Object o) {
