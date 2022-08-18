@@ -8,7 +8,7 @@ public class SessionAttribute {
 
     private final Map<String, Object> attribute = new HashMap<>();
 
-    public void set(String name, String value) {
+    public void set(String name, Object value) {
         attribute.put(name, value);
     }
 

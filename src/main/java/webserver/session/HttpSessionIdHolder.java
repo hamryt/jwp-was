@@ -5,27 +5,21 @@ package webserver.session;
  */
 public class HttpSessionIdHolder {
 
-    private final ThreadLocal<String> sessionId = new ThreadLocal<>();
-    private final SessionIdGenerator sessionIdGenerator;
+    private static final ThreadLocal<String> SESSION_ID = new ThreadLocal<>();
 
-    public HttpSessionIdHolder(SessionIdGenerator sessionIdGenerator) {
-        this.sessionIdGenerator = sessionIdGenerator;
+    public HttpSessionIdHolder() {
+        throw new AssertionError();
     }
 
-    public void generate(String sessionId) {
-        if (HttpSessionContext.has(sessionId)) {
-            this.sessionId.set(sessionId);
-        }
-
-        createSession();
+    public static void generate(String sessionId) {
+        SESSION_ID.set(sessionId);
     }
 
-    private void createSession() {
-        if (sessionId.get() == null) {
-            HttpSession httpSession = new HttpSession(sessionIdGenerator);
-            HttpSessionContext.add(httpSession);
-            this.sessionId.set(httpSession.getId());
-        }
+    public static void getSessionId() {
+        SESSION_ID.get();
     }
 
+    public static void invalidate() {
+        SESSION_ID.remove();
+    }
 }

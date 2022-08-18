@@ -77,7 +77,7 @@ public class RequestHeader {
                 .anyMatch(cookie -> cookie.split("=").length == 2);
     }
 
-    private String getCookie(String cookieName) {
+    public String getCookie(String cookieName) {
         if (!hasCookie(cookieName)) {
             return null;
         }

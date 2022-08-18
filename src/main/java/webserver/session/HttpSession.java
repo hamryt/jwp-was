@@ -11,7 +11,7 @@ public class HttpSession {
         this.id = new SessionId(sessionIdGenerator);
     }
 
-    public void setAttribute(String name, String value) {
+    public void setAttribute(String name, Object value) {
         attribute.set(name, value);
     }
 
