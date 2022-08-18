@@ -21,9 +21,12 @@ import response.ResponseHeader;
 import utils.FileIoUtils;
 import utils.IOUtils;
 import webserver.handler.*;
+import webserver.session.HttpSessionIdHolder;
 
 public class RequestHandler implements Runnable {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final String SESSION_COOKIE_NAME = "JWP_SESSION_ID";
 
     private Socket connection;
 
@@ -41,7 +44,8 @@ public class RequestHandler implements Runnable {
 
             HttpRequest httpRequest = HttpRequestParser.parse(bufferedReader);
             Controller controller = RequestMapping.map(httpRequest.getRequestLine());
-            HttpResponse httpResponse = controller.handle(httpRequest);
+            HttpResponse httpResponse = controller.handle(httpRequest)
+                .addCookie(SESSION_COOKIE_NAME, HttpSessionIdHolder.getSessionId());
 
             httpResponse.write(dos);
         } catch (UnsupportedEncodingException e) {

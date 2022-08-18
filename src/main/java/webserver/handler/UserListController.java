@@ -23,6 +23,7 @@ public class UserListController implements Controller {
     }
 
     private static boolean isLogin(HttpRequest request) {
-        return request.getRequestHeader().hasCookie("logined=true");
+        Object logined = request.getSession().getAttribute("logined");
+        return logined != null && (boolean) logined;
     }
 }

@@ -15,8 +15,8 @@ public class HttpSessionIdHolder {
         SESSION_ID.set(sessionId);
     }
 
-    public static void getSessionId() {
-        SESSION_ID.get();
+    public static String getSessionId() {
+        return SESSION_ID.get();
     }
 
     public static void invalidate() {

@@ -1,5 +1,9 @@
 package request;
 
+import webserver.session.HttpSession;
+import webserver.session.HttpSessionContext;
+import webserver.session.HttpSessionIdHolder;
+
 public class HttpRequest {
 
     private final RequestLine requestLine;
@@ -14,6 +18,10 @@ public class HttpRequest {
 
     public RequestLine getRequestLine() {
         return requestLine;
+    }
+
+    public HttpSession getSession() {
+        return HttpSessionContext.get(HttpSessionIdHolder.getSessionId());
     }
 
     public RequestBody getRequestBody() {
